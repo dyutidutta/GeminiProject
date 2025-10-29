@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .subject-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .subject-card {
+        background: linear-gradient(135deg, var(--pastel-pink) 0%, var(--pastel-peach) 100%);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease;
+    }
+
+    .subject-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .subject-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .subject-class {
+        color: var(--light-text);
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    .subject-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+    }
+
+    .subject-stat {
+        text-align: center;
+    }
+
+    .subject-stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #9370DB;
+    }
+
+    .subject-stat-label {
+        font-size: 0.85rem;
+        color: var(--light-text);
+    }
+
+    .subject-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .subject-actions .btn {
+        flex: 1;
+        min-width: 120px;
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .add-subject-btn {
+        width: 100%;
+        padding: 1.2rem;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="card-header">👨‍🏫 Teacher Dashboard</h1>
+    
+    <a href="{{ url_for('create_subject') }}" class="btn btn-primary add-subject-btn">
+        ➕ Create New Subject
+    </a>
+
+    {% if subjects %}
+        <div class="subject-grid">
+            {% for subject in subjects %}
+                <div class="subject-card">
+                    <div class="subject-title">{{ subject.name }}</div>
+                    <div class="subject-class">📚 Class: {{ subject.class_name }}</div>
+                    
+                    <div class="subject-stats">
+                        <div class="subject-stat">
+                            <div class="subject-stat-value">{{ stats[subject.id].question_papers }}</div>
+                            <div class="subject-stat-label">Question Papers</div>
+                        </div>
+                        <div class="subject-stat">
+                            <div class="subject-stat-value">{{ stats[subject.id].answer_sheets }}</div>
+                            <div class="subject-stat-label">Submissions</div>
+                        </div>
+                    </div>
+
+                    <div class="subject-actions">
+                        <a href="{{ url_for('manage_books', subject_id=subject.id) }}" class="btn btn-secondary">
+                            📖 Books
+                        </a>
+                        <a href="{{ url_for('upload_question_paper', subject_id=subject.id) }}" class="btn btn-success">
+                            📝 Upload QP
+                        </a>
+                        <a href="{{ url_for('view_question_papers', subject_id=subject.id) }}" class="btn btn-primary">
+                            📋 View QPs
+                        </a>
+                        <a href="{{ url_for('view_students', subject_id=subject.id) }}" class="btn btn-primary">
+                            👥 Students
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 3rem; color: var(--light-text);">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">📚</div>
+            <h3>No subjects created yet</h3>
+            <p>Create your first subject to get started!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

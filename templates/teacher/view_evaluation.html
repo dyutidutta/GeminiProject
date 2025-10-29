@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}View Evaluation{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="card-header">📊 Evaluation Result</h1>
+    
+    <div style="background: linear-gradient(135deg, var(--pastel-blue) 0%, var(--pastel-purple) 100%); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="background: rgba(255,255,255,0.9); padding: 1rem; border-radius: 10px;">
+                <div style="font-size: 0.85rem; color: var(--light-text);">Student</div>
+                <div style="font-weight: 600; font-size: 1.1rem;">{{ student.username }}</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.9); padding: 1rem; border-radius: 10px;">
+                <div style="font-size: 0.85rem; color: var(--light-text);">Subject</div>
+                <div style="font-weight: 600; font-size: 1.1rem;">{{ subject.name }}</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.9); padding: 1rem; border-radius: 10px;">
+                <div style="font-size: 0.85rem; color: var(--light-text);">Total Score</div>
+                <div style="font-weight: 700; font-size: 1.5rem; color: #9370DB;">{{ answer_sheet.total_score }}%</div>
+            </div>
+        </div>
+    </div>
+    
+    {% if evaluations %}
+        <h3 style="margin-bottom: 1rem;">Detailed Evaluation:</h3>
+        {% for eval in evaluations %}
+            <div style="background: white; border: 2px solid var(--pastel-purple); border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h4 style="color: var(--dark-text);">Question {{ eval.question_number }}</h4>
+                    <span style="font-size: 1.3rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 10px; background: {% if eval.score >= 60 %}var(--pastel-green){% elif eval.score >= 40 %}var(--pastel-yellow){% else %}var(--pastel-pink){% endif %};">
+                        {{ eval.score }}/100
+                    </span>
+                </div>
+                <div style="background: var(--pastel-blue); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <strong>Question:</strong>
+                    <p style="margin-top: 0.5rem;">{{ eval.question }}</p>
+                </div>
+                <div style="background: #F8F9FA; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <strong>Student's Answer:</strong>
+                    <p style="margin-top: 0.5rem; color: var(--dark-text);">{{ eval.student_answer }}</p>
+                </div>
+                <div style="background: var(--pastel-yellow); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <strong>Feedback:</strong>
+                    <p style="margin-top: 0.5rem;">{{ eval.feedback }}</p>
+                </div>
+                <!-- Sub-scores -->
+                <div style="background: var(--pastel-green); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <strong>Score Breakdown (20 each):</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Correctness: {{ eval.scores.correctness }}/20</li>
+                        <li>Completeness: {{ eval.scores.completeness }}/20</li>
+                        <li>Understanding: {{ eval.scores.understanding }}/20</li>
+                        <li>Terminology: {{ eval.scores.terminology }}/20</li>
+                        <li>Clarity: {{ eval.scores.clarity }}/20</li>
+                    </ul>
+                </div>
+
+                <!-- Model Answer -->
+                <div style="background: #E6E6FA; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <strong>Model Answer:</strong>
+                    <p style="margin-top: 0.5rem;">{{ eval.model_answer }}</p>
+                </div>
+
+                {% if eval.strengths %}
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: #27AE60;">✓ Strengths:</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            {% for strength in eval.strengths %}<li>{{ strength }}</li>{% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if eval.improvements %}
+                    <div>
+                        <strong style="color: #E74C3C;">↑ Improvements Needed:</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            {% for improvement in eval.improvements %}<li>{{ improvement }}</li>{% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <a href="{{ url_for('view_students', subject_id=subject.id) }}" class="btn btn-secondary" style="width: 100%; text-align: center; margin-top: 2rem;">
+        ← Back to Students
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}My Submissions{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="card-header">📁 My Submissions</h1>
+    
+    {% if submissions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Question Paper</th>
+                    <th>Subject</th>
+                    <th>Submitted</th>
+                    <th>Status</th>
+                    <th>Score</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in submissions %}
+                    <tr>
+                        <td>{{ sub.question_paper.title }}</td>
+                        <td>{{ sub.subject.name }}</td>
+                        <td>{{ sub.answer_sheet.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            {% if sub.answer_sheet.evaluated %}
+                                <span style="background: var(--pastel-green); padding: 0.3rem 0.8rem; border-radius: 15px; font-weight: 600;">
+                                    ✓ Evaluated
+                                </span>
+                            {% else %}
+                                <span style="background: var(--pastel-yellow); padding: 0.3rem 0.8rem; border-radius: 15px; font-weight: 600;">
+                                    ⏳ Pending
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if sub.answer_sheet.evaluated %}
+                                <strong style="font-size: 1.2rem; color: {% if sub.answer_sheet.total_score >= 60 %}#27AE60{% elif sub.answer_sheet.total_score >= 40 %}#F39C12{% else %}#E74C3C{% endif %};">
+                                    {{ sub.answer_sheet.total_score }}%
+                                </strong>
+                            {% else %}
+                                <span style="color: var(--light-text);">--</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if sub.answer_sheet.evaluated %}
+                                <a href="{{ url_for('view_result', answer_sheet_id=sub.answer_sheet.id) }}" class="btn btn-primary" style="padding: 0.5rem 1rem;">
+                                    View Result
+                                </a>
+                            {% else %}
+                                <span style="color: var(--light-text);">Awaiting evaluation</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div style="text-align: center; padding: 3rem; color: var(--light-text);">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">📁</div>
+            <h3>No submissions yet</h3>
+            <p>Submit your first answer sheet to see it here!</p>
+        </div>
+    {% endif %}
+    
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary" style="margin-top: 2rem;">← Back to Dashboard</a>
+</div>
+{% endblock %}

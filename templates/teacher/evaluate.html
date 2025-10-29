@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Evaluate Answer Sheet{% endblock %}
+
+{% block extra_css %}
+<style>
+    .evaluation-info {
+        background: linear-gradient(135deg, var(--pastel-blue) 0%, var(--pastel-purple) 100%);
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .info-item {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: var(--light-text);
+        margin-bottom: 0.3rem;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-text);
+    }
+
+    .ocr-mode-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .ocr-option {
+        padding: 1.5rem;
+        border: 3px solid var(--pastel-purple);
+        border-radius: 15px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .ocr-option:hover {
+        border-color: #9370DB;
+        transform: translateY(-3px);
+    }
+
+    .ocr-option.selected {
+        background: linear-gradient(135deg, #9370DB 0%, #BA9FDB 100%);
+        color: white;
+        border-color: #9370DB;
+    }
+
+    .ocr-option input[type="radio"] {
+        display: none;
+    }
+
+    .ocr-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .mode-badge {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    .mode-free {
+        background: var(--pastel-green);
+        color: var(--dark-text);
+    }
+
+    .mode-paid {
+        background: var(--pastel-yellow);
+        color: var(--dark-text);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="card-header">📝 Evaluate Answer Sheet</h1>
+
+    <div class="evaluation-info">
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Student</div>
+                <div class="info-value">{{ student.username }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Subject</div>
+                <div class="info-value">{{ subject.name }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Class</div>
+                <div class="info-value">{{ subject.class_name }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Question Paper</div>
+                <div class="info-value">{{ question_paper.title }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Total Questions</div>
+                <div class="info-value">{{ question_paper.total_questions }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Submitted</div>
+                <div class="info-value">{{ answer_sheet.submitted_at.strftime('%Y-%m-%d') }}</div>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST">
+        <div class="form-group">
+            <label class="form-label">Select OCR Mode for Text Extraction:</label>
+            <div class="ocr-mode-selector">
+                <label class="ocr-option" id="paddle-option">
+                    <input type="radio" name="ocr_mode" value="paddle" checked>
+                    <div class="ocr-icon">✍️</div>
+                    <div><strong>PaddleOCR</strong></div>
+                    <div style="font-size: 0.85rem; margin-top: 0.3rem;">Handwritten Text</div>
+                    <span class="mode-badge mode-free">FREE</span>
+                </label>
+
+
+                <label class="ocr-option" id="gemini-option">
+                    <input type="radio" name="ocr_mode" value="gemini">
+                    <div class="ocr-icon">🤖</div>
+                    <div><strong>Gemini AI</strong></div>
+                    <div style="font-size: 0.85rem; margin-top: 0.3rem;">Fast & Accurate</div>
+                    <span class="mode-badge mode-paid">PAID</span>
+                </label>
+
+            </div>
+            <div style="background: var(--pastel-yellow); padding: 1rem; border-radius: 10px; margin-top: 1rem;">
+                <strong>💡 OCR Mode Guide:</strong>
+                <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                    <li><strong>PaddleOCR:</strong> Good for handwritten text, slower but free</li>
+                    <li><strong>Gemini AI:</strong> Fast, better than PaddleOCR, requires Google API key</li>
+                </ul>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.2rem; font-size: 1.1rem;">
+            🚀 Start Evaluation
+        </button>
+    </form>
+
+    <a href="{{ url_for('view_students', subject_id=subject.id) }}" class="btn btn-secondary" style="margin-top: 1rem; width: 100%; text-align: center;">
+        ← Back to Students
+    </a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const ocrOptions = document.querySelectorAll('.ocr-option');
+    
+    ocrOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            ocrOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+
+    // Set default selection
+    document.getElementById('paddle-option').classList.add('selected');
+</script>
+{% endblock %}

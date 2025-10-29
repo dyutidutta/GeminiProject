@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Class Rankings{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="card-header">🏆 Class Rankings</h1>
+    
+    {% if rankings %}
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Rank</th>
+                    <th>Student Name</th>
+                    <th>Average Score</th>
+                    <th>Submissions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ranking in rankings %}
+                    <tr {% if ranking.student.id == current_user_id %}style="background: var(--pastel-yellow); font-weight: 600;"{% endif %}>
+                        <td style="text-align: center;">
+                            {% if ranking.rank == 1 %}
+                                <span style="font-size: 1.5rem;">🥇</span>
+                            {% elif ranking.rank == 2 %}
+                                <span style="font-size: 1.5rem;">🥈</span>
+                            {% elif ranking.rank == 3 %}
+                                <span style="font-size: 1.5rem;">🥉</span>
+                            {% else %}
+                                #{{ ranking.rank }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ ranking.student.username }}
+                            {% if ranking.student.id == current_user_id %}
+                                <span style="background: #9370DB; color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem; margin-left: 0.5rem;">YOU</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong style="font-size: 1.2rem; color: {% if ranking.avg_score >= 80 %}#27AE60{% elif ranking.avg_score >= 60 %}#2ECC71{% elif ranking.avg_score >= 40 %}#F39C12{% else %}#E74C3C{% endif %};">
+                                {{ ranking.avg_score }}%
+                            </strong>
+                        </td>
+                        <td>{{ ranking.total_submissions }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div style="text-align: center; padding: 3rem; color: var(--light-text);">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
+            <h3>No rankings available yet</h3>
+            <p>Rankings will appear once students start submitting answers!</p>
+        </div>
+    {% endif %}
+    
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary" style="margin-top: 2rem;">← Back to Dashboard</a>
+</div>
+{% endblock %}

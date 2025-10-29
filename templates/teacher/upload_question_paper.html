@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Upload Question Paper{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 700px; margin: 2rem auto;">
+    <h1 class="card-header">📝 Upload Question Paper</h1>
+    <div style="background: var(--pastel-blue); padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem;">
+        <strong>Subject:</strong> {{ subject.name }} | <strong>Class:</strong> {{ subject.class_name }}
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label class="form-label">Question Paper Title</label>
+            <input type="text" class="form-control" name="title" placeholder="e.g., Mid-Term Exam 2024" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Upload Question Paper (PDF/DOCX)</label>
+            <input type="file" class="form-control" name="question_paper" accept=".pdf,.docx" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Upload Question Paper</button>
+    </form>
+    <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary" style="width: 100%; margin-top: 1rem; text-align: center;">Cancel</a>
+</div>
+{% endblock %}

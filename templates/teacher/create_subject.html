@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Create Subject{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 3rem auto;">
+    <h1 class="card-header">➕ Create New Subject</h1>
+    <form method="POST">
+        <div class="form-group">
+            <label class="form-label">Subject Name</label>
+            <input type="text" class="form-control" name="name" placeholder="e.g., Artificial Intelligence" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Class Name</label>
+            <input type="text" class="form-control" name="class_name" placeholder="e.g., 12-Science, 10-A" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Create Subject</button>
+    </form>
+    <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary" style="width: 100%; margin-top: 1rem; text-align: center;">Cancel</a>
+</div>
+{% endblock %}
