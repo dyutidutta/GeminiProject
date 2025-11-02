@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Register - AI Answer Sheet Evaluator{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        max-width: 500px;
+        margin: 3rem auto;
+    }
+
+    .register-card {
+        background: white;
+        border-radius: 25px;
+        padding: 3rem;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .register-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .register-header h2 {
+        font-size: 2rem;
+        color: var(--dark-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .role-selector {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .role-option {
+        padding: 1.5rem;
+        border: 3px solid var(--pastel-purple);
+        border-radius: 15px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .role-option:hover {
+        border-color: #9370DB;
+        transform: translateY(-3px);
+    }
+
+    .role-option.selected {
+        background: linear-gradient(135deg, #9370DB 0%, #BA9FDB 100%);
+        color: white;
+        border-color: #9370DB;
+    }
+
+    .role-option input[type="radio"] {
+        display: none;
+    }
+
+    .role-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    #class_name_group {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-header">
+            <h2>📝 Create Account</h2>
+            <p>Join our learning platform</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+            <div class="form-group">
+                <label class="form-label">I am a:</label>
+                <div class="role-selector">
+                    <label class="role-option" id="teacher-option">
+                        <input type="radio" name="role" value="teacher" required>
+                        <div class="role-icon">👨‍🏫</div>
+                        <div>Teacher</div>
+                    </label>
+                    <label class="role-option" id="student-option">
+                        <input type="radio" name="role" value="student" required>
+                        <div class="role-icon">👨‍🎓</div>
+                        <div>Student</div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+
+            <div class="form-group" id="class_name_group">
+                <label class="form-label" for="class_name">Class Name</label>
+                <input type="text" class="form-control" id="class_name" name="class_name" placeholder="e.g., 10-A, 12-Science">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+
+        <div class="register-link" style="text-align: center; margin-top: 1.5rem; color: var(--light-text);">
+            Already have an account? <a href="{{ url_for('login') }}" style="color: #9370DB; text-decoration: none; font-weight: 600;">Login here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const roleOptions = document.querySelectorAll('.role-option');
+    const classNameGroup = document.getElementById('class_name_group');
+    const classNameInput = document.getElementById('class_name');
+
+    roleOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            roleOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            const role = this.querySelector('input').value;
+            
+            if (role === 'student') {
+                classNameGroup.style.display = 'block';
+                classNameInput.required = true;
+            } else {
+                classNameGroup.style.display = 'none';
+                classNameInput.required = false;
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}View Result{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="card-header">📊 Evaluation Result</h1>
+    <div style="text-align: center; padding: 3rem; background: linear-gradient(135deg, var(--pastel-purple) 0%, var(--pastel-pink) 100%); border-radius: 15px; margin-bottom: 2rem;">
+        <div style="font-size: 5rem; font-weight: 700; color: white;">{{ answer_sheet.total_score }}%</div>
+        <div style="font-size: 1.5rem; color: white;">Your Total Score</div>
+    </div>
+    
+    {% if evaluations %}
+        <h3 style="margin-bottom: 1rem;">Question-wise Breakdown:</h3>
+        {% for eval in evaluations %}
+            <div style="background: white; border: 2px solid var(--pastel-purple); border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem;">
+                <h4 style="color: var(--dark-text); margin-bottom: 0.5rem;">Question {{ eval.question_number }}</h4>
+                <p style="background: var(--pastel-blue); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">{{ eval.question }}</p>
+                <div style="margin-bottom: 1rem;">
+                    <strong>Your Answer:</strong>
+                    <p style="color: var(--light-text); margin-top: 0.5rem;">{{ eval.student_answer }}</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <strong>Score:</strong>
+                    {% if eval.score >= 60 %}
+                        <span style="font-size: 1.5rem; font-weight: 700; color: #27AE60;">
+                    {% elif eval.score >= 40 %}
+                        <span style="font-size: 1.5rem; font-weight: 700; color: #F39C12;">
+                    {% else %}
+                        <span style="font-size: 1.5rem; font-weight: 700; color: #E74C3C;">
+                    {% endif %}
+                        {{ eval.score }}/100
+                    </span>
+                </div>
+                <div style="background: var(--pastel-yellow); padding: 1rem; border-radius: 8px;">
+                    <strong>Feedback:</strong>
+                    <p style="margin-top: 0.5rem;">{{ eval.feedback }}</p>
+                </div>
+                {% if eval.strengths %}
+                    <div style="margin-top: 1rem;">
+                        <strong style="color: #27AE60;">✓ Strengths:</strong>
+                        <ul>{% for strength in eval.strengths %}<li>{{ strength }}</li>{% endfor %}</ul>
+                    </div>
+                {% endif %}
+                {% if eval.improvements %}
+                    <div style="margin-top: 1rem;">
+                        <strong style="color: #E74C3C;">↑ Areas for Improvement:</strong>
+                        <ul>{% for improvement in eval.improvements %}<li>{{ improvement }}</li>{% endfor %}</ul>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-primary" style="width: 100%; text-align: center;">← Back to Dashboard</a>
+</div>
+{% endblock %}

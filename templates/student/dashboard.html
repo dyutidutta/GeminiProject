@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="card-header">👨‍🎓 Student Dashboard</h1>
+    
+    <div class="stats-grid">
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--pastel-purple) 0%, #F0E8F8 100%);">
+            <div class="stat-value">{{ avg_score }}%</div>
+            <div class="stat-label">📊 Average Score</div>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--pastel-green) 0%, #E8F8F2 100%);">
+            <div class="stat-value">{% if rank %}#{{ rank }}{% else %}--{% endif %}</div>
+            <div class="stat-label">🏆 Class Rank</div>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--pastel-blue) 0%, #E5F2FA 100%);">
+            <div class="stat-value">{{ answer_sheets|length }}</div>
+            <div class="stat-label">📝 Submissions</div>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--pastel-pink) 0%, #FFE5EC 100%);">
+            <div class="stat-value">{{ total_students }}</div>
+            <div class="stat-label">👥 Total Students</div>
+        </div>
+    </div>
+
+    <div class="card" style="background: linear-gradient(135deg, var(--pastel-yellow) 0%, #FFF8E1 100%); margin-top: 2rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--dark-text);">📋 Available Question Papers</h2>
+        
+        {% if question_papers %}
+            <div style="display: grid; gap: 1rem;">
+                {% for qp in question_papers %}
+                    <div style="background: white; padding: 1.5rem; border-radius: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="color: var(--dark-text); margin-bottom: 0.5rem;">{{ qp.title }}</h3>
+                            <div style="color: var(--light-text); font-size: 0.9rem;">
+                                📚 Subject: {{ qp.subject.name }} | 📝 Questions: {{ qp.total_questions }} | 📅 {{ qp.uploaded_at.strftime('%Y-%m-%d') }}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="{{ url_for('view_question_paper', qp_id=qp.id) }}" class="btn btn-primary">
+                                👁️ View
+                            </a>
+                            <a href="{{ url_for('submit_answer', qp_id=qp.id) }}" class="btn btn-success">
+                                📤 Submit Answer
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 2rem; color: var(--light-text);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                <h3>No question papers available yet</h3>
+                <p>Check back later for new assignments!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <a href="{{ url_for('my_submissions') }}" class="btn btn-primary" style="flex: 1; text-align: center;">
+            📁 My Submissions
+        </a>
+        <a href="{{ url_for('view_rankings') }}" class="btn btn-secondary" style="flex: 1; text-align: center;">
+            🏆 Class Rankings
+        </a>
+    </div>
+</div>
+{% endblock %}

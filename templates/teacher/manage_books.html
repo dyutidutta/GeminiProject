@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Manage Books - {{ subject.name }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h1 class="card-header">📖 Manage Books - {{ subject.name }}</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label class="form-label">Upload Reference Books (PDF/DOCX)</label>
+            <input type="file" class="form-control" name="books" multiple accept=".pdf,.docx" required>
+            <div style="margin-top: 0.5rem; color: var(--light-text); font-size: 0.9rem;">
+                Upload 2-3 textbooks for this subject. These will be used for evaluation.
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">📤 Upload Books</button>
+    </form>
+    
+    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Uploaded Books:</h3>
+    {% if books %}
+        <table>
+            <thead><tr><th>Filename</th><th>Uploaded</th></tr></thead>
+            <tbody>
+                {% for book in books %}
+                    <tr><td>{{ book.filename }}</td><td>{{ book.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="color: var(--light-text); text-align: center; padding: 2rem;">No books uploaded yet.</p>
+    {% endif %}
+    
+    <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary" style="margin-top: 1rem;">← Back</a>
+</div>
+{% endblock %}

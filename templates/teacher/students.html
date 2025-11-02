@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Students - {{ subject.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="card-header">👥 Students - {{ subject.name }} (Class {{ subject.class_name }})</h1>
+    
+    <div class="stats-grid">
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--pastel-green) 0%, #E8F8F2 100%);">
+            <div class="stat-value">{{ highest_score }}</div>
+            <div class="stat-label">🏆 Highest Score</div>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--pastel-blue) 0%, #E5F2FA 100%);">
+            <div class="stat-value">{{ class_average }}</div>
+            <div class="stat-label">📊 Class Average</div>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--pastel-purple) 0%, #F0E8F8 100%);">
+            <div class="stat-value">{{ student_data|length }}</div>
+            <div class="stat-label">👨‍🎓 Total Students</div>
+        </div>
+    </div>
+
+    {% if student_data %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Username</th>
+                    <th>Average Score</th>
+                    <th>Total Submissions</th>
+                    <th>Evaluated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in student_data %}
+                    <tr {% if data.avg_score < 40 %}class="failed"{% endif %}>
+                        <td>{{ data.student.username }}</td>
+                        <td>{{ data.student.email }}</td>
+                        <td>
+                            <strong style="font-size: 1.1rem; color: {% if data.avg_score >= 60 %}#27AE60{% elif data.avg_score >= 40 %}#F39C12{% else %}#E74C3C{% endif %};">
+                                {{ data.avg_score }}%
+                            </strong>
+                        </td>
+                        <td>{{ data.total_submissions }}</td>
+                        <td>{{ data.evaluated_submissions }}</td>
+                        <td>
+                            {% if data.answer_sheets %}
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    {% for sheet in data.answer_sheets %}
+                                        {% if not sheet.evaluated %}
+                                            <a href="{{ url_for('evaluate_answer_sheet', answer_sheet_id=sheet.id) }}" 
+                                               class="btn btn-success" 
+                                               style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                                                Evaluate #{{ loop.index }}
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url_for('view_evaluation', answer_sheet_id=sheet.id) }}" 
+                                               class="btn btn-primary" 
+                                               style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                                                View #{{ loop.index }}
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <span style="color: var(--light-text);">No submissions</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div style="text-align: center; padding: 3rem; color: var(--light-text);">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">👨‍🎓</div>
+            <h3>No students found</h3>
+            <p>No students have enrolled in class {{ subject.class_name }} yet.</p>
+        </div>
+    {% endif %}
+
+    <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary" style="margin-top: 2rem;">
+        ← Back to Dashboard
+    </a>
+</div>
+{% endblock %}

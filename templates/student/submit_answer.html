@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Submit Answer{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 700px; margin: 2rem auto;">
+    <h1 class="card-header">📤 Submit Answer Sheet</h1>
+    <div style="background: var(--pastel-purple); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 0.5rem;">{{ question_paper.title }}</h3>
+        <div style="color: var(--dark-text);">
+            📚 Subject: {{ question_paper.subject.name }} | 📝 Questions: {{ question_paper.total_questions }}
+        </div>
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label class="form-label">Upload Your Answer Sheet (PDF/Image)</label>
+            <input type="file" class="form-control" name="answer_sheet" accept=".pdf,.jpg,.jpeg,.png" required>
+            <div style="margin-top: 0.5rem; color: var(--light-text); font-size: 0.9rem;">
+                Accepted formats: PDF, JPG, PNG
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success" style="width: 100%;">Submit Answer Sheet</button>
+    </form>
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary" style="width: 100%; margin-top: 1rem; text-align: center;">Cancel</a>
+</div>
+{% endblock %}
